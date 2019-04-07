@@ -26,41 +26,39 @@ export default class CarMapIcon extends React.Component<Props> {
     return this.props.lat != nextProps.lat || this.props.lng != nextProps.lng;
   }
 
-  render() {
-    const iconStyle = {
-      transform: 'translate(-50%, -50%)',
-      // transition: 'width 0.1s ease-out, height 0.1s ease-out',
-      fontSize: 24,
-      width: 24,
-      height: 24,
-      cursor: 'pointer',
-    }
+  componentWillUnmount() {
 
-    const makeCode = this.props.car.details.make.toLowerCase().replace(' ', '-');
-    const carIconPath = '/car_icons/' + makeCode + '.png';
+  }
+
+  render() {
     return (
         <Popover title={<CarPopoverTitle car={this.props.car}/>}
-                content={<CarPopoverContent car={this.props.car}/>}>
-          
-      
-          {!['alfa-romeo', 'bmw', 'fiat', 'ford', 'mini', 'toyota', 'vw'].includes(makeCode)
-            ? <Icon type="car" theme="twoTone" twoToneColor="#EF4B18" style={iconStyle}/>
-            : <img src={carIconPath} style={iconStyle}></img>}
-            
+                 content={<CarPopoverContent car={this.props.car}/>}>
+          <div style={{ transform: 'translate(-50%, -50%)'}}>
+            <CarIcon car={this.props.car}/>
+          </div>
         </Popover>
     );
   }
 }
 
-// function CarIcon({ car }: { car: Car }) {
-//   const makeCode = car.details.make.toLowerCase().replace(' ', '-');
-//   const carIconPath = '/car_icons/' + makeCode + '.png';
 
-//   if (!['alfa-romeo', 'bmw', 'fiat', 'ford', 'mini', 'toyota', 'vw'].includes(makeCode))
-//     return <Icon type="car" theme="twoTone" twoToneColor="#EF4B18" style={iconStyle}/>
-//   else
-//     return <img src={carIconPath} style={iconStyle}></img>
-// }
+function CarIcon({ car }: { car: Car }) {
+  const iconStyle = {
+    fontSize: 24,
+    width: 24,
+    height: 24,
+    cursor: 'pointer',
+  }
+
+  const makeCode = car.details.make.toLowerCase().replace(' ', '-');
+  const carIconPath = '/car_icons/' + makeCode + '.png';
+
+  if (!['alfa-romeo', 'bmw', 'fiat', 'ford', 'mini', 'toyota', 'vw'].includes(makeCode))
+    return <Icon type="car" theme="twoTone" twoToneColor="#EF4B18" style={iconStyle}/>
+  else
+    return <img src={carIconPath} style={iconStyle} className="car-appear"></img>
+}
 
 function CarPopoverTitle({ car }: { car: Car }) {
   const style = {};

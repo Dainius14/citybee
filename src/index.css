@@ -3,3 +3,16 @@ html, body, #root {
   width: 100%;
   margin: 0;
 }
+
+@keyframes scale-up {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.car-appear {
+  animation: scale-up 0.4s cubic-bezier(0.5,2,0.75,1);
+}
