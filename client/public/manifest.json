@@ -1,7 +1,6 @@
 {
-  "short_name": "CityBee Web",
-  "name": "CityBee Web",
-  "description": "CityBee client from Web browsers",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
