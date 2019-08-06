@@ -9,8 +9,8 @@ import { VehicleStore } from './stores/vehicleStore';
 import { UiState } from './stores/uiState';
 
 
-const vehicleStore = new VehicleStore();
 const uiState = new UiState();
+const vehicleStore = new VehicleStore(uiState);
 ReactDOM.render(
     <Provider vehicleStore={vehicleStore} uiState={uiState}>
         <App/>

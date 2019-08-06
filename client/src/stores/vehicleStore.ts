@@ -82,6 +82,18 @@ export class VehicleStore {
         })
     }
 
+    @computed
+    get visibleVehicles() {
+        return this.filteredVehicles.filter(this.isCarInVisibleArea);
+    }
+
+    
+    isCarInVisibleArea = (car: Car) => {
+        const map = this.uiState!.map;
+        return car.lat >= map.latMin && car.lat <= map.latMax
+            && car.long >= map.lngMin && car.long <= map.lngMax;
+    }
+
 //   startResfreshingCars(): void {
     
 //     setInterval(async () => {
