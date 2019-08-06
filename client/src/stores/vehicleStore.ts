@@ -2,10 +2,13 @@ import { observable, action, reaction, computed } from 'mobx';
 
 import { Car, CarDetails } from '../types';
 import { getAvailableCars, getCarsDetails } from '../CityBeeAPI';
+import { UiState } from './uiState';
 
 // mobx.configure({ enforceActions: "observed" })
 
 export class VehicleStore {
+    private uiState: UiState;
+
     @observable
     vehicleDetails: Array<CarDetails> = [];
 
@@ -14,6 +17,7 @@ export class VehicleStore {
 
     @observable
     availableVehicles: Array<Car> = [];
+
 
     @observable
     vehicleFilter: {
@@ -26,7 +30,8 @@ export class VehicleStore {
         scooters: true,
     }
 
-    constructor() {
+    constructor(uiState: UiState) {
+        this.uiState = uiState;
         (async () => {
             await this.setCarsDetails();
             await this.setAvailableCars();
@@ -61,6 +66,20 @@ export class VehicleStore {
       this.prevAvailableVehicles = this.availableVehicles;
       this.availableVehicles = availableCardWDetails;
       console.log('Available cars', availableCardWDetails);
+    }
+
+    @computed
+    get filteredVehicles() {
+        return this.availableVehicles.filter(car => {
+            let showVehicle = false;
+            if (this.uiState.vehicleFilter.cars) {
+                showVehicle = showVehicle || car.service_id !== 34;
+            }
+            if (this.uiState.vehicleFilter.scooters) {
+                showVehicle = showVehicle || car.service_id === 34;
+            }
+            return showVehicle;
+        })
     }
 
 //   startResfreshingCars(): void {
