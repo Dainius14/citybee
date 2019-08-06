@@ -16,5 +16,10 @@ export class UiState {
         lngMin: 0,
         lngMax: 0
     }
+
+    @observable
+    carFilter: {
+        [_: number]: boolean
+    } = {}
 }
 

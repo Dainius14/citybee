@@ -1,6 +1,5 @@
 import React from 'react';
-import { Icon, Popover, Switch } from 'antd';
-import { Car } from '../types';
+import { Switch } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { UiState } from '../stores/uiState';
 
