@@ -1,15 +1,6 @@
 import React from 'react';
 import { Icon, Popover } from 'antd';
 import { Car } from '../types';
-// import styled from 'styled-components';
-
-
-// const PopoverTitle = styled.div`
-//   margin-left: 'auto';
-//   margin-right: 'auto';
-//   display: 'table';
-// `;
-
 interface Props {
   car: Car;
   lat: number;
@@ -18,12 +9,9 @@ interface Props {
 }
 
 export default class CarMapIcon extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-  }
 
   shouldComponentUpdate(nextProps: any) {
-    return this.props.lat != nextProps.lat || this.props.lng != nextProps.lng;
+    return this.props.lat !== nextProps.lat || this.props.lng !== nextProps.lng;
   }
 
   componentWillUnmount() {

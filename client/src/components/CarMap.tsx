@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
-import CarMapIcon from './CarMapIcon';
-import { Car, CarDetails } from '../types';
-import { getAvailableCars, getCarsDetails } from '../CityBeeAPI';
+import { inject, observer } from 'mobx-react';
 
-interface State {
-  carsDetails: Array<CarDetails>;
-  prevAvailableCars: Array<Car>;
-  availableCars: Array<Car>;
+import CarMapIcon from './CarMapIcon';
+import { Car } from '../types';
+import { VehicleStore } from '../stores/vehicleStore';
+
+interface IState {
   map: {
     currentZoom: number;
     latMin: number;
@@ -17,13 +16,21 @@ interface State {
   };
 }
 
-export default class CarMap extends Component<any, State> {
+interface IProps {
+  vehicleStore?: VehicleStore,
+  center: {
+    lat: number,
+    lng: number
+  },
+  zoom: number
+}
+
+@inject('vehicleStore')
+@observer
+export default class CarMap extends Component<IProps, IState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      carsDetails: [],
-      prevAvailableCars: [],
-      availableCars: [],
       map: {
         currentZoom: 0,
         latMin: 0,
@@ -47,50 +54,7 @@ export default class CarMap extends Component<any, State> {
   };
 
 
-  async setCarsDetails(): Promise<void> {
-    const carsDetails = await getCarsDetails();
-    this.setState({ carsDetails: carsDetails });
-    console.log('Cars details', carsDetails);
-  }
 
-  async setAvailableCars(): Promise<void> {
-    const availableCars = await getAvailableCars();
-    // Not using map(), because need to break out of the loop
-    const availableCardWDetails: Array<Car> = [];
-    for (let i in availableCars) {
-      const car = availableCars[i];
-      const carDetails = this.state.carsDetails.find(x => x.id == car.id);
-      // If no car details available, it means there's a new car released,
-      // but the details for it have not yet been downloaded
-      if (!carDetails) {
-        console.log(`Car ${car.id} has no details. Getting new cars details...`);
-        await this.setCarsDetails();
-        return this.setAvailableCars();
-      }
-      availableCardWDetails.push({ ...car, details: carDetails });
-    }
-    this.setState({ prevAvailableCars: this.state.availableCars, availableCars: availableCardWDetails });
-    console.log('Available cars', availableCardWDetails);
-  }
-
-  startResfreshingCars(): void {
-    
-    setInterval(async () => {
-      await this.setAvailableCars();
-      
-      const newAvailableCars = this.state.availableCars.filter((x: Car) => !this.state.prevAvailableCars.some((y: Car) => y.id == x.id));
-      const takenCars = this.state.prevAvailableCars.filter((x: Car) => !this.state.availableCars.some((y: Car) => y.id == x.id));
-      
-      console.log('New available cars', newAvailableCars);
-      console.log('Taken cars', takenCars);
-    }, 5000);
-  }
-
-  async componentDidMount() {
-    await this.setCarsDetails();
-    await this.setAvailableCars();
-    this.startResfreshingCars();
-  }
 
   handleOnChange = (e: any) => {
     this.setState({
@@ -135,6 +99,7 @@ export default class CarMap extends Component<any, State> {
 
 
   render() {
+    const store = this.props.vehicleStore!;
     return (
       <div style={{ height: '100%', width: '100%' }}>
         <GoogleMapReact
@@ -146,7 +111,7 @@ export default class CarMap extends Component<any, State> {
           //onChildClick={this.handleOnChildClick}
           >
       
-            {this.state.availableCars.map((car: Car) => {
+            {store.availableVehicles.map((car: Car) => {
               if (this.isCarInVisibleArea(car)) {
                 return (
                   <CarMapIcon key={car.id.toString()}

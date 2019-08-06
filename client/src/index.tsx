@@ -1,10 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'mobx-react'
+
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { VehicleStore } from './stores/vehicleStore';
+import { UiState } from './stores/uiState';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+
+const vehicleStore = new VehicleStore();
+const uiState = new UiState();
+ReactDOM.render(
+    <Provider vehicleStore={vehicleStore} uiState={uiState}>
+        <App/>
+    </Provider>,
+    document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
