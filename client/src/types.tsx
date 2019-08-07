@@ -35,8 +35,7 @@ export interface VehicleTree {
     [_: string]: {
         [_: string]: {
             count: number,
-            service_ids: Set<number>,
-            visible: boolean
+            service_ids: Set<number>
         }
     }
 }

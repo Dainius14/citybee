@@ -1,10 +1,11 @@
 import React from 'react';
-import { Tree, Icon, Button } from 'antd';
+import { Tree, Icon, Button, Collapse } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { UiState } from '../stores/uiState';
 import { VehicleStore } from '../stores/vehicleStore';
 
 const { TreeNode } = Tree;
+const { Panel } = Collapse;
 
 interface IProps {
     uiState?: UiState,
@@ -20,28 +21,32 @@ export default class CarFilter extends React.Component<IProps> {
         const uiState = this.props.uiState!;
         return (
             <div>
-                
-                <Button type="link" onClick={() => uiState.checkAllCars()}>Check all</Button>
-                <Button type="link" onClick={() => uiState.uncheckAllCars()}>Uncheck all</Button>
-                <Tree checkable
-                      checkedKeys={uiState.checkedCars}
-                      onCheck={v => { uiState.updateCarFilter(v as Array<string>)}}
-                      >
-                    {Object.keys(vehicleStore.vehicleTree).sort().map(make => {
-                        const models = vehicleStore.vehicleTree[make];
+                <Collapse bordered={false}>
+                    
+                    <Panel header="Car filter" key="1">
+                        <Tree checkable disabled={!uiState.vehicleFilter.cars}
+                            checkedKeys={uiState.checkedCars}
+                            onCheck={v => { uiState.updateCarFilter(v as Array<string>)}}
+                            >
+                            {Object.keys(vehicleStore.vehicleTree).sort().map(make => {
+                                const models = vehicleStore.vehicleTree[make];
 
-                        return (
-                            <TreeNode title={make} key={make} icon={<CarIcon carMake={make}/>} selectable={false}>
-                                {Object.keys(models).sort().map(model => {
-                                    const item = models[model];
+                                return (
+                                    <TreeNode title={make} key={make} icon={<CarIcon carMake={make}/>} selectable={false}>
+                                        {Object.keys(models).sort().map(model => {
+                                            const item = models[model];
 
-                                    return <TreeNode title={model} key={`${make}.${model}`}
-                                            selectable={false}></TreeNode>;
-                                })}
-                            </TreeNode>
-                        );
-                    })}
-                </Tree>
+                                            return <TreeNode title={model} key={`${make}.${model}`}
+                                                    selectable={false}></TreeNode>;
+                                        })}
+                                    </TreeNode>
+                                );
+                            })}
+                        </Tree>
+                        <Button type="link" onClick={() => uiState.checkAllCars()}>Check all</Button>
+                        <Button type="link" onClick={() => uiState.uncheckAllCars()}>Uncheck all</Button>
+                    </Panel>
+                </Collapse>
             </div>
         );
     }

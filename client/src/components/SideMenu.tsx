@@ -2,6 +2,9 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { VehicleStore } from '../stores/vehicleStore';
 import { UiState } from '../stores/uiState';
+import { Statistic, Row, Col, Typography } from 'antd';
+
+const { Text } = Typography;
 
 interface IProps {
     vehicleStore?: VehicleStore,
@@ -14,14 +17,21 @@ interface IProps {
 export default class SideMenu extends React.Component<IProps> {
     render() {
         const vehicleStore = this.props.vehicleStore!;
-        const uiState = this.props.uiState!;
         return (
             <div>
-                <div>vehicle count: {vehicleStore.vehicleDetails.length}</div>
-                <div>available vehicles: {vehicleStore.availableVehicles.length}</div>
-                <div>visible vehicles: {vehicleStore.visibleVehicles.length}</div>
-                <div>lat: {uiState.map.latMin} ~ {uiState.map.latMax}</div>
-                <div>long: {uiState.map.lngMin} ~ {uiState.map.lngMax}</div>
+                <Text type="secondary" style={{ marginBottom: 12 }}><i>Data updates every 5 seconds</i></Text>
+                <Row>
+                    <Col span={12}>
+                        <Statistic title="Available cars" value={vehicleStore.availableCarsCount} suffix={`/ ${vehicleStore.totalCarsCount}`}/>
+                        <Statistic title="Available scooters" value={vehicleStore.availableScootersCount} suffix={`/ ${vehicleStore.totalScootersCount}`}/>
+                    </Col>
+                    <Col span={12}>
+                        <Statistic title="Visible cars" value={vehicleStore.visibleCarsCount}/>
+                        <Statistic title="Visible scooters" value={vehicleStore.visibleScootersCount}/>
+                    </Col>
+                </Row>
+                
+                
             </div>
         );
     }

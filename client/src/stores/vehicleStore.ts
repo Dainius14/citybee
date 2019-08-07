@@ -29,6 +29,9 @@ export class VehicleStore {
             await this.setAvailableCars();
         })();
 
+        setInterval(async () => {
+            await this.setAvailableCars();
+        }, 5000)
     }
 
     @action
@@ -45,8 +48,7 @@ export class VehicleStore {
             if (!tree[car.make][car.model]) {
                 tree[car.make][car.model] = {
                     count: 1,
-                    service_ids: new Set([car.service_id]),
-                    visible: true
+                    service_ids: new Set([car.service_id])
                 };
             }
             else {
@@ -101,14 +103,51 @@ export class VehicleStore {
         })
     }
 
+    
+    @computed get totalCarsCount() { return this.vehicleDetails.filter(vehicle => vehicle.service_id !== 34).length; }
+    @computed get totalScootersCount() { return this.vehicleDetails.filter(vehicle => vehicle.service_id === 34).length; }
+
+    @computed
+    get availableCars() {
+        return this.availableVehicles.filter(vehicle => vehicle.service_id !== 34);
+    }
+    @computed get availableCarsCount() { return this.availableCars.length; }
+
+    @computed
+    get filteredCars() {
+        return this.availableCars.filter(car => !!this.uiState.checkedCars.find(x => x === `${car.details.make}.${car.details.model}`));
+    }
+
+    @computed
+    get visibleCars() {
+        return this.uiState.vehicleFilter.cars ? this.filteredCars.filter(this.isVehicleInVisibleArea) : [];
+    }
+
+    @computed get visibleCarsCount() { return this.visibleCars.length; }
+
+
+    @computed
+    get availableScooters() {
+        return this.availableVehicles.filter(vehicle => vehicle.service_id === 34);
+    }
+    @computed get availableScootersCount() { return this.availableScooters.length; }
+
+    @computed
+    get visibleScooters() {
+        return this.uiState.vehicleFilter.scooters ? this.availableScooters.filter(this.isVehicleInVisibleArea) : [];
+    }
+
+    @computed get visibleScootersCount() { return this.visibleScooters.length; }
+
+
     @computed
     get visibleVehicles() {
-        return this.filteredVehicles.filter(this.isCarInVisibleArea);
+        return [ ...this.visibleCars, ...this.visibleScooters];
     }
 
 
 
-    isCarInVisibleArea = (car: Car) => {
+    isVehicleInVisibleArea = (car: Car) => {
         const map = this.uiState!.map;
         return car.lat >= map.latMin && car.lat <= map.latMax
             && car.long >= map.lngMin && car.long <= map.lngMax;

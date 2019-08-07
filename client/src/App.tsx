@@ -14,7 +14,7 @@ class App extends Component {
   render() {
     return (
       <Layout style={{ height: '100%' }}>
-         <Sider width={300} style={{ background: 'white', padding: 16 }}>
+         <Sider width={300} style={{ background: 'white', padding: 16, boxShadow: '0px 0px 40px 0px rgba(0,0,0,0.3)', zIndex: 1}}>
            <SideMenu></SideMenu>
            <br/>
            <VehicleFilter></VehicleFilter>
