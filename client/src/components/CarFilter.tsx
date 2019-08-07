@@ -17,14 +17,16 @@ interface IProps {
 export default class CarFilter extends React.Component<IProps> {
     render() {
         const vehicleStore = this.props.vehicleStore!;
+        const uiState = this.props.uiState!;
         return (
             <div>
                 
-                <Button type="link" onClick={() => vehicleStore.checkedVehicles = vehicleStore.getAllCheckedCarsArray()}>Check all</Button>
-                <Button type="link" onClick={() => vehicleStore.checkedVehicles = []}>Uncheck all</Button>
+                <Button type="link" onClick={() => uiState.checkAllCars()}>Check all</Button>
+                <Button type="link" onClick={() => uiState.uncheckAllCars()}>Uncheck all</Button>
                 <Tree checkable
-                      checkedKeys={vehicleStore.checkedVehicles}
-                      onCheck={v => { vehicleStore.checkedVehicles = v as Array<string> }}>
+                      checkedKeys={uiState.checkedCars}
+                      onCheck={v => { uiState.updateCarFilter(v as Array<string>)}}
+                      >
                     {Object.keys(vehicleStore.vehicleTree).sort().map(make => {
                         const models = vehicleStore.vehicleTree[make];
 

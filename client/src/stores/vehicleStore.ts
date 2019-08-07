@@ -17,9 +17,6 @@ export class VehicleStore {
     vehicleTree: VehicleTree = {};
 
     @observable
-    checkedVehicles: Array<string> = [];
-
-    @observable
     prevAvailableVehicles: Array<Car> = [];
 
     @observable
@@ -48,16 +45,15 @@ export class VehicleStore {
             if (!tree[car.make][car.model]) {
                 tree[car.make][car.model] = {
                     count: 1,
-                    service_ids: [car.service_id],
+                    service_ids: new Set([car.service_id]),
                     visible: true
                 };
             }
             else {
                 const item = tree[car.make][car.model];
                 item.count++;
-                item.service_ids.find(x => x === car.service_id) || item.service_ids.push(car.service_id);
+                item.service_ids.add(car.service_id);
             }
-
 
             return tree;
         }, {});
@@ -66,9 +62,7 @@ export class VehicleStore {
         console.log('Vehicle tree', tree);
 
         
-        const checkedVehicles = this.getAllCheckedCarsArray();
-        this.checkedVehicles = checkedVehicles;
-        console.log('Checked tree', checkedVehicles);
+        this.uiState.setCarFilter(tree);
     }
 
     @action
@@ -95,11 +89,10 @@ export class VehicleStore {
 
     @computed
     get filteredVehicles() {
-        console.log(this.checkedVehicles)
         return this.availableVehicles.filter(car => {
             let showVehicle = false;
             if (this.uiState.vehicleFilter.cars && car.service_id !== 34) {
-                showVehicle = !!this.checkedVehicles.find(x => x === `${car.details.make}.${car.details.model}`);
+                showVehicle = !!this.uiState.checkedCars.find(x => x === `${car.details.make}.${car.details.model}`);
             }
             if (this.uiState.vehicleFilter.scooters && car.service_id === 34) {
                 showVehicle = true;
@@ -121,15 +114,6 @@ export class VehicleStore {
             && car.long >= map.lngMin && car.long <= map.lngMax;
     }
 
-    getAllCheckedCarsArray = () => {
-        return Object.keys(this.vehicleTree).map(make => {
-            const makeItem = this.vehicleTree[make];
-            return Object.keys(makeItem).map(model => {
-                const modelItem = makeItem[model];
-                return modelItem.visible ? `${make}.${model}` : '';
-            });
-        }).flat(1).filter(x => !!x);
-    }
 
     //   startResfreshingCars(): void {
 
