@@ -66,13 +66,7 @@ export class VehicleStore {
         console.log('Vehicle tree', tree);
 
         
-        const checkedVehicles = Object.keys(this.vehicleTree).map(make => {
-            const makeItem = this.vehicleTree[make];
-            return Object.keys(makeItem).map(model => {
-                const modelItem = makeItem[model];
-                return modelItem.visible ? model : '';
-            });
-        }).flat(1).filter(x => !!x);
+        const checkedVehicles = this.getAllCheckedCarsArray();
         this.checkedVehicles = checkedVehicles;
         console.log('Checked tree', checkedVehicles);
     }
@@ -101,13 +95,14 @@ export class VehicleStore {
 
     @computed
     get filteredVehicles() {
+        console.log(this.checkedVehicles)
         return this.availableVehicles.filter(car => {
             let showVehicle = false;
-            if (this.uiState.vehicleFilter.cars) {
-                showVehicle = showVehicle || car.service_id !== 34;
+            if (this.uiState.vehicleFilter.cars && car.service_id !== 34) {
+                showVehicle = !!this.checkedVehicles.find(x => x === `${car.details.make}.${car.details.model}`);
             }
-            if (this.uiState.vehicleFilter.scooters) {
-                showVehicle = showVehicle || car.service_id === 34;
+            if (this.uiState.vehicleFilter.scooters && car.service_id === 34) {
+                showVehicle = true;
             }
             return showVehicle;
         })
@@ -124,6 +119,16 @@ export class VehicleStore {
         const map = this.uiState!.map;
         return car.lat >= map.latMin && car.lat <= map.latMax
             && car.long >= map.lngMin && car.long <= map.lngMax;
+    }
+
+    getAllCheckedCarsArray = () => {
+        return Object.keys(this.vehicleTree).map(make => {
+            const makeItem = this.vehicleTree[make];
+            return Object.keys(makeItem).map(model => {
+                const modelItem = makeItem[model];
+                return modelItem.visible ? `${make}.${model}` : '';
+            });
+        }).flat(1).filter(x => !!x);
     }
 
     //   startResfreshingCars(): void {

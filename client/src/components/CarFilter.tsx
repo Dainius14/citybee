@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tree, Icon } from 'antd';
+import { Tree, Icon, Button } from 'antd';
 import { inject, observer } from 'mobx-react';
 import { UiState } from '../stores/uiState';
 import { VehicleStore } from '../stores/vehicleStore';
@@ -17,11 +17,14 @@ interface IProps {
 export default class CarFilter extends React.Component<IProps> {
     render() {
         const vehicleStore = this.props.vehicleStore!;
-        console.log(vehicleStore.checkedVehicles);
         return (
             <div>
+                
+                <Button type="link" onClick={() => vehicleStore.checkedVehicles = vehicleStore.getAllCheckedCarsArray()}>Check all</Button>
+                <Button type="link" onClick={() => vehicleStore.checkedVehicles = []}>Uncheck all</Button>
                 <Tree checkable
-                      checkedKeys={vehicleStore.checkedVehicles}>
+                      checkedKeys={vehicleStore.checkedVehicles}
+                      onCheck={v => { vehicleStore.checkedVehicles = v as Array<string> }}>
                     {Object.keys(vehicleStore.vehicleTree).sort().map(make => {
                         const models = vehicleStore.vehicleTree[make];
 
@@ -30,7 +33,7 @@ export default class CarFilter extends React.Component<IProps> {
                                 {Object.keys(models).sort().map(model => {
                                     const item = models[model];
 
-                                    return <TreeNode title={model} key={model}
+                                    return <TreeNode title={model} key={`${make}.${model}`}
                                             selectable={false}></TreeNode>;
                                 })}
                             </TreeNode>
