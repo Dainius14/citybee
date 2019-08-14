@@ -22,22 +22,17 @@ export default class CarFilter extends React.Component<IProps> {
         return (
             <div>
                 <Collapse bordered={false}>
-                    
+
                     <Panel header="Car filter" key="1">
                         <Tree checkable disabled={!uiState.vehicleFilter.cars}
                             checkedKeys={uiState.checkedCars}
                             onCheck={v => { uiState.updateCarFilter(v as Array<string>)}}
                             >
-                            {Object.keys(vehicleStore.vehicleTree).sort().map(make => {
-                                const models = vehicleStore.vehicleTree[make];
-
+                            {uiState.carTree.map(make => {
                                 return (
-                                    <TreeNode title={make} key={make} icon={<CarIcon carMake={make}/>} selectable={false}>
-                                        {Object.keys(models).sort().map(model => {
-                                            const item = models[model];
-
-                                            return <TreeNode title={model} key={`${make}.${model}`}
-                                                    selectable={false}></TreeNode>;
+                                    <TreeNode title={make.title} key={make.key} selectable={false}>
+                                        {make.models.map(model => {
+                                            return <TreeNode title={model.title} key={model.key} selectable={false}/>;
                                         })}
                                     </TreeNode>
                                 );

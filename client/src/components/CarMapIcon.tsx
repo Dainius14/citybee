@@ -59,7 +59,7 @@ function CarPopoverContent({ car }: { car: Car }) {
   return <div>
     <div><Icon type="environment" theme="twoTone" /> {car.address}</div>
     <div><Icon type="euro" theme="twoTone" /> {car.price + ' €/min'}</div>
-    <img src={car.details.image_uri} style={{ height: 120, position: 'absolute', top: -115, left: 0 }}></img>
+    <img src={car.details.image_uri} style={{ height: 120, position: 'absolute', top: -115, left: 0 }}/>
   </div>;
 }
 

@@ -31,11 +31,11 @@ export interface CarDetails {
     service_id: number;
 }
 
-export interface VehicleTree {
-    [_: string]: {
-        [_: string]: {
-            count: number,
-            service_ids: Set<number>
-        }
-    }
+export interface CarTreeItem {
+    title: string,
+    key: string,
+    models: [{
+        title: string,
+        key: string,
+    }]
 }

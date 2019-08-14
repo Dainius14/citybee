@@ -81,14 +81,13 @@ export default class CarMap extends Component<IProps, IState> {
                 //onClick={this.handleOnClick}
                 //onChildClick={this.handleOnChildClick}
                 >
-
                     {vehicleStore.visibleVehicles.map((car: Car) => {
                         return (
                             <CarMapIcon key={car.id.toString()}
                                 lat={car.lat} lng={car.long}
                                 zoom={uiState.map.currentZoom}
                                 car={car} />);
-                        
+
                     })}
                 </GoogleMapReact>
 

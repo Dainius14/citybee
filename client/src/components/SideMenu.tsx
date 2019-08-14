@@ -1,8 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
+import { Statistic, Row, Col, Typography } from 'antd';
+
+import Spinner from './Spinner/Spinner';
 import { VehicleStore } from '../stores/vehicleStore';
 import { UiState } from '../stores/uiState';
-import { Statistic, Row, Col, Typography } from 'antd';
 
 const { Text } = Typography;
 
@@ -20,6 +22,7 @@ export default class SideMenu extends React.Component<IProps> {
         return (
             <div>
                 <Text type="secondary" style={{ marginBottom: 12 }}><i>Data updates every 5 seconds</i></Text>
+                <Spinner />
                 <Row>
                     <Col span={12}>
                         <Statistic title="Available cars" value={vehicleStore.availableCarsCount} suffix={`/ ${vehicleStore.totalCarsCount}`}/>
