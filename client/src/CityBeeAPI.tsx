@@ -5,7 +5,7 @@ const cityBeeOrigin = 'https://citybee-webapp-production-lt.azurewebsites.net';
 // Mostly not needed apart from app version, but I'm a nice person
 const defaultHeaders = {
     'Accept-Language': 'en-US',
-    'App-Version': '4.8.0',
+    'App-Version': '4.10.2',
     'Accept': 'application/json'
 };
 
